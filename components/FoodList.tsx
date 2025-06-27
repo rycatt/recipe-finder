@@ -1,4 +1,5 @@
 import { REACT_APP_API_KEY } from '@env';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useEffect, useState } from 'react';
 import { ActivityIndicator, Text, View } from 'react-native';
 
@@ -12,16 +13,22 @@ export const FoodList = () => {
   useEffect(() => {
     const fetchFoodData = async () => {
       try {
-        const response = await fetch(
-          `https://api.spoonacular.com/recipes/complexSearch?apiKey=${apiKey}&number=9`
-        );
-        if (!response.ok) {
-          throw new Error(`HTTP Error! status: ${response.status}`);
-        }
+        const cachedData = await AsyncStorage.getItem('recipesCache');
+        if (cachedData) {
+          setRecipes(JSON.parse(cachedData));
+        } else {
+          const response = await fetch(
+            `https://api.spoonacular.com/recipes/complexSearch?apiKey=${apiKey}&number=9`
+          );
+          if (!response.ok) {
+            throw new Error(`HTTP Error! status: ${response.status}`);
+          }
 
-        const data = await response.json();
-        setRecipes(data.results);
-        console.log('Data:', data.results);
+          const data = await response.json();
+          setRecipes(data.results);
+          await AsyncStorage.setItem('recipesCache', JSON.stringify(data.results));
+          console.log('Data:', data.results);
+        }
       } catch (error: any) {
         setError(error);
       } finally {
