@@ -1,4 +1,5 @@
 import { CategoryItem } from '@/components/CategoryItem';
+import { FoodList } from '@/components/FoodList';
 import { ChefHat } from 'lucide-react-native';
 import { ScrollView, Text, View } from 'react-native';
 
@@ -26,6 +27,8 @@ export default function HomeScreen() {
             <CategoryItem>Mexican</CategoryItem>
           </ScrollView>
         </View>
+        <Text className="text-3xl font-medium mt-6">Featured Recipes</Text>
+        <FoodList />
       </View>
     </ScrollView>
   );
